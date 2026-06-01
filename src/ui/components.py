@@ -12,7 +12,21 @@ def render_ranking(ranking_data):
     # This table shows the ranking of all provinces sorted by variation.
     # It gives the user a broader context to compare the selected province against.
     st.subheader("Ranking of provinces by value variation")
-    st.dataframe(ranking_data[["variation"]].sort_values("variation", ascending=False))
+    ranking_table = (
+        ranking_data[["variation"]]
+        .sort_values("variation", ascending=False)
+        .reset_index()
+        .rename(
+            columns={
+                "province": "Province",
+                "variation": "Absolute variation (EUR/m2)",
+            }
+        )
+    )
+    ranking_table["Absolute variation (EUR/m2)"] = ranking_table[
+        "Absolute variation (EUR/m2)"
+    ].map(lambda value: f"{value:.2f}")
+    st.dataframe(ranking_table, hide_index=True)
 
 
 def render_select_periods(periods):
@@ -37,12 +51,12 @@ def render_highest_lowest(highest_variation, lowest_variation):
     col1.metric("Highest variation", f"{highest_variation.name} ({highest_variation.variation:.2f} EUR/m2)")
     col2.metric("Lowest variation", f"{lowest_variation.name} ({lowest_variation.variation:.2f} EUR/m2)")
 
-def render_kpis(latest_value, variation, percentage_variation, highest_variation, lowest_variation) -> None:
+def render_kpis(latest_value, variation, percentage_variation) -> None:
     # This row mixes province-specific KPIs with market-wide highlights
     # so the user can compare one province against the broader ranking.
     col1, col2, col3 = st.columns(3)
-    col1.metric("Latest appraised value (EUR/m2)", f"{latest_value:.2f}")
-    col2.metric("Absolute variation (EUR/m2)", f"{variation:.2f}")
+    col1.metric("Latest appraised value (EUR/m2)", f"{latest_value:.2f} €/m2")
+    col2.metric("Absolute variation (EUR/m2)", f"{variation:.2f} €/m2")
 
     if variation > 0:
         arrow = "↑"

@@ -88,6 +88,14 @@ def calculate_ranking(housing_data, first_period, last_period):
     return grouped_data
 
 
+def build_map_data(housing_data, first_period, last_period):
+    # The map needs one row per province with the latest value available
+    # inside the selected range and the absolute variation across that range.
+    ranking_data = calculate_ranking(housing_data, first_period, last_period)
+    map_data = ranking_data.reset_index().rename(columns={"index": "province"})
+    return map_data[["province", "last_value", "variation"]]
+
+
 def calculate_highest_and_lowest_variation(ranking_data):
     # The ranking is already sorted from highest to lowest variation.
     # That means the first row is the winner and the last row is the lowest.
