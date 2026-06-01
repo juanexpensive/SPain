@@ -11,7 +11,7 @@ from src.domain.analytics import (
     calculate_ranking
 )
 from src.ui.charts import render_chart
-from src.ui.components import render_kpis, render_select_periods
+from src.ui.components import render_kpis, render_ranking, render_select_periods
 
 
 def render_body(housing_data: pd.DataFrame) -> None:
@@ -58,6 +58,8 @@ def render_body(housing_data: pd.DataFrame) -> None:
 
     # Render the KPI row first so the user sees the summary before the detailed chart.
     render_kpis(latest_value, variation, percentage_variation, highest_variation, lowest_variation)
+
+    render_ranking(ranking_data)
 
     # Render the detailed time-series view after the summary cards.
     render_chart(chart_data, selected_province, first_period, last_period)

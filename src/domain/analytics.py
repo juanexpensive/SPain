@@ -66,8 +66,6 @@ def calculate_ranking(housing_data, first_period, last_period):
         & (housing_data["period"] <= last_period)
     ]
 
-    # Sorting is important before grouping so that first() and last()
-    # correspond to the earliest and latest periods of each province.
     sorted_housing_data = filtered_housing_data.sort_values(["province", "period"])
     grouped_data = sorted_housing_data.groupby(["province"])
 

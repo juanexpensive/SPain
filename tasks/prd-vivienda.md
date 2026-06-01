@@ -159,6 +159,10 @@ This first version is designed to be realistic for a short delivery window while
 - A local cached data file may be useful to avoid repeated API calls during development or demo sessions.
 - Provincial map rendering may require an external GeoJSON or shapefile source compatible with the chosen province identifiers.
 - Data transformation logic should be separated from UI rendering so the app can be maintained and extended later.
+- Recommended implementation sequencing:
+  - first complete the UI and analytics slices against a stable sample or cached dataset
+  - then connect the real INE source inside `US-001` once the internal data contract is stable
+  - this reduces the risk of mixing ingestion/debugging problems with unfinished product slices
 
 ## Success Metrics
 

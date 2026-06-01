@@ -12,7 +12,7 @@ def render_chart(
     # Give the chart a short sentence so the user always knows
     # which province and period range is being plotted.
     st.write(
-        f"Historical evolution in {selected_province} between {first_period} - {last_period}"
+        f"Appraised free-market housing value in {selected_province} between {first_period} and {last_period}"
     )
 
     # Altair gives us explicit control over the axes and tooltip,
@@ -22,7 +22,7 @@ def render_chart(
         .mark_line(point=True)
         .encode(
             x=alt.X("period:O", title="Period"),
-            y=alt.Y("value:Q", title="Value"),
+            y=alt.Y("value:Q", title="Appraised value (EUR/m2)"),
             tooltip=["period", "value"],
         )
         .properties(width="container")
