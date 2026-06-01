@@ -30,6 +30,3 @@ def render_chart(
 
     st.altair_chart(line_chart, width="stretch")
 
-    # Keeping the raw table below the chart is useful while developing
-    # because it lets us verify the exact rows behind the visual.
-    st.dataframe(chart_data)

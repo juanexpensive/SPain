@@ -29,21 +29,26 @@ def render_select_periods(periods):
 
     return first_period, last_period
 
+def render_highest_lowest(highest_variation, lowest_variation):
+    # This section highlights the provinces with the highest and lowest variation
+    # in the selected period range, so the user can quickly identify them.
+    st.subheader("Provinces with highest and lowest variation")
+    col1, col2 = st.columns(2)
+    col1.metric("Highest variation", f"{highest_variation.name} ({highest_variation.variation:.2f} EUR/m2)")
+    col2.metric("Lowest variation", f"{lowest_variation.name} ({lowest_variation.variation:.2f} EUR/m2)")
 
 def render_kpis(latest_value, variation, percentage_variation, highest_variation, lowest_variation) -> None:
     # This row mixes province-specific KPIs with market-wide highlights
     # so the user can compare one province against the broader ranking.
-    col1, col2, col3, col4, col5 = st.columns(5)
+    col1, col2, col3 = st.columns(3)
     col1.metric("Latest appraised value (EUR/m2)", f"{latest_value:.2f}")
     col2.metric("Absolute variation (EUR/m2)", f"{variation:.2f}")
 
     if variation > 0:
-        arrow = "^"
+        arrow = "↑"
     elif variation < 0:
-        arrow = "v"
+        arrow = "↓"
     else:
         arrow = "="
 
     col3.metric("Percentage variation", f"{arrow}{percentage_variation:.2f}%")
-    col4.metric("Province with highest variation", f"{highest_variation.name}")
-    col5.metric("Province with lowest variation", f"{lowest_variation.name}")
