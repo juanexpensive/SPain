@@ -9,10 +9,14 @@ def render_chart(
     first_period,
     last_period,
 ) -> None:
+    # Give the chart a short sentence so the user always knows
+    # which province and period range is being plotted.
     st.write(
         f"Historical evolution in {selected_province} between {first_period} - {last_period}"
     )
 
+    # Altair gives us explicit control over the axes and tooltip,
+    # which is safer than relying on Streamlit to infer the chart shape.
     line_chart = (
         alt.Chart(chart_data)
         .mark_line(point=True)
@@ -25,4 +29,7 @@ def render_chart(
     )
 
     st.altair_chart(line_chart, width="stretch")
+
+    # Keeping the raw table below the chart is useful while developing
+    # because it lets us verify the exact rows behind the visual.
     st.dataframe(chart_data)

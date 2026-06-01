@@ -15,12 +15,15 @@ from src.ui.components import render_kpis, render_select_periods
 
 
 def render_body(housing_data: pd.DataFrame) -> None:
+    # Build the province selector from the available dataset values.
     provinces = housing_data["province"].unique()
     selected_province = st.selectbox("select a province", options=provinces)
 
+    # Prepare the selected province data before calculating anything else.
     sorted_province_data = get_province_data(housing_data, selected_province)
     available_periods = prepare_periods(sorted_province_data)
 
+    # Read the date range from the UI and normalize it if the user picked it backwards.
     first_period, last_period = render_select_periods(available_periods)
     first_period, last_period, was_swapped = normalize_period_range(
         first_period,
@@ -30,14 +33,31 @@ def render_body(housing_data: pd.DataFrame) -> None:
     if was_swapped:
         st.info("Selected period range was reversed, so it has been swapped automatically.")
 
+    # This filtered table represents the exact slice of data we want to analyze
+    # for the selected province and period range.
     selected_range_data = filter_period_range(
         sorted_province_data,
         first_period,
         last_period,
     )
-    
+
+    # The chart only needs period and value, so we prepare a smaller table for it.
     chart_data = selected_range_data[["period", "value"]]
-    highest_variation, lowest_variation = calculate_highest_and_lowest_variation(calculate_ranking(housing_data, first_period, last_period))
+
+    # The ranking looks across all provinces, using the same period range chosen in the UI.
+    ranking_data = calculate_ranking(housing_data, first_period, last_period)
+
+    # Extract the top and bottom province from the sorted ranking table
+    # so we can show them as headline highlights.
+    highest_variation, lowest_variation = calculate_highest_and_lowest_variation(
+        ranking_data
+    )
+
+    # Calculate the KPI values for the province currently selected in the chart.
     latest_value, variation, percentage_variation = calculate_kpis(selected_range_data)
+
+    # Render the KPI row first so the user sees the summary before the detailed chart.
     render_kpis(latest_value, variation, percentage_variation, highest_variation, lowest_variation)
+
+    # Render the detailed time-series view after the summary cards.
     render_chart(chart_data, selected_province, first_period, last_period)
